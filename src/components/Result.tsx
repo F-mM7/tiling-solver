@@ -20,11 +20,15 @@ const Result: React.FC<ResultProps> = ({ pieces, result }) => {
       .split("-")
       .map((s) => JSON.parse(s));
 
-    shift(rotate(pieces.get(idx), rotateNum), shiftCoordinate).forEach(
-      ([r, c]) => {
-        paintList.set([r, c], colors[idx]);
-      }
-    );
+    const piece = pieces.get(idx); // pieces.get(idx)の結果を変数に格納
+    if (!piece) {
+      console.error(`Error: Piece not found for ID ${idx}`); // undefinedの場合の処理
+      return;
+    }
+
+    shift(rotate(piece, rotateNum), shiftCoordinate).forEach(([r, c]) => {
+      paintList.set([r, c], colors[idx]);
+    });
   });
 
   console.log(paintList);
