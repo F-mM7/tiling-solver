@@ -171,24 +171,19 @@ const Grid: React.FC<GridProps> = ({
       setCurrentSelection([]);
     };
 
-    const handleTouchEnd = (e: TouchEvent) => {
+    const handleTouchEnd = () => {
       if (!ref.current) return;
-
-      const rect = ref.current.getBoundingClientRect();
-      const touch = e.changedTouches[0];
-      const row = Math.floor(((touch.clientY - rect.top) / rect.height) * rows);
-      const col = Math.floor(((touch.clientX - rect.left) / rect.width) * cols);
-
-      const newSelection: number[][] = [[row, col]];
+      if (!isSelecting) return;
 
       setSelectedCells((prev) => {
         if (isStartCellSelected) {
           return prev.filter(
-            ([r, c]) => !newSelection.some(([nr, nc]) => nr === r && nc === c)
+            ([r, c]) =>
+              !currentSelection.some(([nr, nc]) => nr === r && nc === c)
           );
         } else {
           const cellSet = new Set(prev.map(([r, c]) => `${r},${c}`));
-          newSelection.forEach(([r, c]) => cellSet.add(`${r},${c}`));
+          currentSelection.forEach(([r, c]) => cellSet.add(`${r},${c}`));
           return Array.from(cellSet)
             .map((key) => key.split(",").map(Number) as [number, number])
             .filter(([r, c]) => r >= 0 && r < rows && c >= 0 && c < cols);
@@ -202,12 +197,12 @@ const Grid: React.FC<GridProps> = ({
     window.addEventListener("mousemove", handleGlobalMouseMove);
     window.addEventListener("mouseup", handleGlobalMouseUp);
     window.addEventListener("touchmove", handleTouchMove);
-    window.addEventListener("touchend", handleTouchEnd); // タッチ終了時のイベントを追加
+    window.addEventListener("touchend", handleTouchEnd);
     return () => {
       window.removeEventListener("mousemove", handleGlobalMouseMove);
       window.removeEventListener("mouseup", handleGlobalMouseUp);
       window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("touchend", handleTouchEnd); // クリーンアップ
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [
     isSelecting,
