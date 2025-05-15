@@ -128,50 +128,7 @@ const Grid: React.FC<GridProps> = ({
       setCurrentSelection(newSelection);
     };
 
-    const handleGlobalMouseUp = (e: MouseEvent) => {
-      if (!ref.current) return;
-      if (!isSelecting) return;
-
-      const rect = ref.current.getBoundingClientRect();
-      const endRow = Math.floor(((e.clientY - rect.top) / rect.height) * rows);
-      const endCol = Math.floor(((e.clientX - rect.left) / rect.width) * cols);
-      const [startRow, startCol] = startCell;
-      const newSelection: number[][] = [];
-      for (
-        let r = Math.min(startRow, endRow);
-        r <= Math.max(startRow, endRow);
-        r++
-      ) {
-        for (
-          let c = Math.min(startCol, endCol);
-          c <= Math.max(startCol, endCol);
-          c++
-        ) {
-          if (r >= 0 && r < rows && c >= 0 && c < cols) {
-            newSelection.push([r, c]);
-          }
-        }
-      }
-
-      setSelectedCells((prev) => {
-        if (isStartCellSelected) {
-          return prev.filter(
-            ([r, c]) => !newSelection.some(([nr, nc]) => nr === r && nc === c)
-          );
-        } else {
-          const cellSet = new Set(prev.map(([r, c]) => `${r},${c}`));
-          newSelection.forEach(([r, c]) => cellSet.add(`${r},${c}`));
-          return Array.from(cellSet)
-            .map((key) => key.split(",").map(Number) as [number, number])
-            .filter(([r, c]) => r >= 0 && r < rows && c >= 0 && c < cols);
-        }
-      });
-
-      setIsSelecting(false);
-      setCurrentSelection([]);
-    };
-
-    const handleTouchEnd = () => {
+    const handleGlobalMouseUp = () => {
       if (!ref.current) return;
       if (!isSelecting) return;
 
@@ -191,18 +148,17 @@ const Grid: React.FC<GridProps> = ({
       });
 
       setIsSelecting(false);
-      setCurrentSelection([]);
     };
 
     window.addEventListener("mousemove", handleGlobalMouseMove);
-    window.addEventListener("mouseup", handleGlobalMouseUp);
     window.addEventListener("touchmove", handleTouchMove);
-    window.addEventListener("touchend", handleTouchEnd);
+    window.addEventListener("mouseup", handleGlobalMouseUp);
+    window.addEventListener("touchend", handleGlobalMouseUp);
     return () => {
       window.removeEventListener("mousemove", handleGlobalMouseMove);
-      window.removeEventListener("mouseup", handleGlobalMouseUp);
       window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("mouseup", handleGlobalMouseUp);
+      window.removeEventListener("touchend", handleGlobalMouseUp);
     };
   }, [
     isSelecting,
