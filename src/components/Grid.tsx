@@ -224,6 +224,10 @@ const Grid: React.FC<GridProps> = ({
         gridTemplateRows: `repeat(${rows}, 1fr)`,
         gridTemplateColumns: `repeat(${cols}, 1fr)`,
         cursor: "pointer",
+        touchAction: "none", // タッチ操作時のデフォルト動作を無効化
+        userSelect: "none", // テキスト選択を無効化
+        // TODO ハイライトの無効化が必要か確認
+        WebkitTapHighlightColor: "transparent", // タッチ時の水色ハイライトを無効化
       }}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
