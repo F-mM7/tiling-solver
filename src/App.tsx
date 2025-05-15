@@ -37,9 +37,15 @@ function App() {
     });
   };
 
+  const [rotatable, setRotatable] = useState(false); // rotatableを状態として管理
+
+  const toggleRotatable = () => {
+    setRotatable((prev) => !prev); // rotatableをトグル
+  };
+
   const solve = () => {
     const piecesArray = Array.from(pieces.values()); // Mapから配列に変換
-    const results = solver(board, piecesArray, true);
+    const results = solver(board, piecesArray, rotatable);
     console.log(results);
     setResults(
       { dlxResults: results, piecesSnapshot: new Map(pieces) } // piecesのスナップショットを保存
@@ -73,8 +79,18 @@ function App() {
         <button onClick={addSelector} style={{ marginRight: "10px" }}>
           Add Selector
         </button>
-        <button onClick={removeSelector} disabled={selectors.length === 0}>
+        <button
+          onClick={removeSelector}
+          disabled={selectors.length === 0}
+          style={{ marginRight: "10px" }}
+        >
           Rem Selector
+        </button>
+        <button onClick={toggleRotatable} style={{ marginRight: "10px" }}>
+          {rotatable ? "Disable Rotation" : "Enable Rotation"}
+        </button>
+        <button onClick={solve} style={{ marginRight: "10px" }}>
+          Solve
         </button>
       </div>
       <div
@@ -92,12 +108,6 @@ function App() {
             />
           </div>
         ))}
-      </div>
-
-      <div>
-        <button onClick={solve} style={{ marginRight: "10px" }}>
-          solve
-        </button>
       </div>
       <div>
         <h2>Results</h2>
