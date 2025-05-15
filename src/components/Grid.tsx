@@ -171,44 +171,19 @@ const Grid: React.FC<GridProps> = ({
       setCurrentSelection([]);
     };
 
-    const handleTouchEnd = (e: TouchEvent) => {
+    const handleTouchEnd = () => {
       if (!ref.current) return;
       if (!isSelecting) return;
-
-      const rect = ref.current.getBoundingClientRect();
-      const touch = e.touches[0];
-      const endRow = Math.floor(
-        ((touch.clientY - rect.top) / rect.height) * rows
-      );
-      const endCol = Math.floor(
-        ((touch.clientX - rect.left) / rect.width) * cols
-      );
-      const [startRow, startCol] = startCell;
-      const newSelection: number[][] = [];
-      for (
-        let r = Math.min(startRow, endRow);
-        r <= Math.max(startRow, endRow);
-        r++
-      ) {
-        for (
-          let c = Math.min(startCol, endCol);
-          c <= Math.max(startCol, endCol);
-          c++
-        ) {
-          if (r >= 0 && r < rows && c >= 0 && c < cols) {
-            newSelection.push([r, c]);
-          }
-        }
-      }
 
       setSelectedCells((prev) => {
         if (isStartCellSelected) {
           return prev.filter(
-            ([r, c]) => !newSelection.some(([nr, nc]) => nr === r && nc === c)
+            ([r, c]) =>
+              !currentSelection.some(([nr, nc]) => nr === r && nc === c)
           );
         } else {
           const cellSet = new Set(prev.map(([r, c]) => `${r},${c}`));
-          newSelection.forEach(([r, c]) => cellSet.add(`${r},${c}`));
+          currentSelection.forEach(([r, c]) => cellSet.add(`${r},${c}`));
           return Array.from(cellSet)
             .map((key) => key.split(",").map(Number) as [number, number])
             .filter(([r, c]) => r >= 0 && r < rows && c >= 0 && c < cols);
