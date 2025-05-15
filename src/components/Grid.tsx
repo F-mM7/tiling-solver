@@ -180,6 +180,10 @@ const Grid: React.FC<GridProps> = ({
         gridTemplateRows: `repeat(${rows}, 1fr)`,
         gridTemplateColumns: `repeat(${cols}, 1fr)`,
         cursor: "pointer",
+        userSelect: "none",
+        MozUserSelect: "none",
+        WebkitUserSelect: "none",
+        msUserSelect: "none",
       }}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
