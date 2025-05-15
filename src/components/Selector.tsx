@@ -13,8 +13,8 @@ const Selector: React.FC<SelectorProps> = ({
   handleSelectorChange: handleSelectorChange,
   color = "white",
 }) => {
-  const [rows, setRows] = useState(10);
-  const [cols, setCols] = useState(10);
+  const [rows, setRows] = useState(5);
+  const [cols, setCols] = useState(5);
   const [selectedCells, setSelectedCells] = useState<number[][]>([]);
 
   useEffect(() => {
