@@ -5,16 +5,17 @@ import type { Result as DlxResult } from "dancing-links";
 import { useState } from "react";
 import { solver } from "./service/solver";
 import { colorSet } from "./service/colorSet";
+
 function App() {
-  const [selectors, setSelectors] = useState<number[]>([0]); // GridSelectorのリストを管理
-  const [board, setBoard] = useState<number[][]>([]); // 選択されたセルの座標を管理
-  const [pieces, setPieces] = useState<Map<number, number[][]>>(new Map()); // 初期値を空のMapに設定
+  const [selectors, setSelectors] = useState<number[]>([0]);
+  const [board, setBoard] = useState<number[][]>([]);
+  const [pieces, setPieces] = useState<Map<number, number[][]>>(new Map());
   const [results, setResults] = useState<{
     dlxResults: DlxResult<string>[][];
     piecesSnapshot: Map<number, number[][]>;
-  }>({ dlxResults: [], piecesSnapshot: new Map() }); // piecesのスナップショットを含む
+  }>({ dlxResults: [], piecesSnapshot: new Map() });
 
-  const colors = colorSet(selectors.length); // セレクターの数に応じて色を生成
+  const colors = colorSet(selectors.length);
 
   const handleBoardSelectorChange = (selectedCells: number[][]) => {
     setBoard(selectedCells);
@@ -36,19 +37,17 @@ function App() {
     });
   };
 
-  const [rotatable, setRotatable] = useState(false); // rotatableを状態として管理
+  const [rotatable, setRotatable] = useState(false);
 
   const toggleRotatable = () => {
-    setRotatable((prev) => !prev); // rotatableをトグル
+    setRotatable((prev) => !prev);
   };
 
   const solve = () => {
-    const piecesArray = Array.from(pieces.values()); // Mapから配列に変換
+    const piecesArray = Array.from(pieces.values());
     const results = solver(board, piecesArray, rotatable);
     console.log(results);
-    setResults(
-      { dlxResults: results, piecesSnapshot: new Map(pieces) } // piecesのスナップショットを保存
-    );
+    setResults({ dlxResults: results, piecesSnapshot: new Map(pieces) });
   };
 
   const addSelector = () => {
@@ -57,10 +56,10 @@ function App() {
 
   const removeSelector = () => {
     setSelectors((prev) => {
-      const updatedSelectors = prev.slice(0, -1); // 最後のセレクターを削除
+      const updatedSelectors = prev.slice(0, -1);
       setPieces((prevPieces) => {
         const newPieces = new Map(prevPieces);
-        newPieces.delete(prev.length - 1); // 対応するデータを削除
+        newPieces.delete(prev.length - 1);
         return newPieces;
       });
       return updatedSelectors;
@@ -69,6 +68,7 @@ function App() {
 
   return (
     <>
+      <title>Tiling Solver</title>
       <div>
         <h1>board selector</h1>
         <Selector handleSelectorChange={handleBoardSelectorChange}></Selector>
