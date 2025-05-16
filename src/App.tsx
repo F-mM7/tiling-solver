@@ -8,7 +8,7 @@ import { solver } from "./service/solver";
 import { colorSet } from "./service/colorSet";
 
 function App() {
-  const [selectors, setSelectors] = useState(2);
+  const [selectors, setSelectors] = useState(5);
   const [board, setBoard] = useState<number[][]>([]);
   const [pieces, setPieces] = useState<Map<number, number[][]>>(new Map());
   const [results, setResults] = useState<{
@@ -50,6 +50,7 @@ function App() {
   const solve = () => {
     const piecesArray = Array.from(pieces.values());
     const results = solver(board, piecesArray, rotatable);
+    console.log("Results:", results);
     setResults({ dlxResults: results, piecesSnapshot: new Map(pieces) });
   };
 
@@ -98,16 +99,33 @@ function App() {
         ))}
       </div>
       <div>
-        <button onClick={toggleRotatable} style={{ marginRight: "10px" }}>
-          {rotatable ? "Disable Rotation" : "Enable Rotation"}
+        <h1>Results</h1>
+        <button
+          onClick={toggleRotatable}
+          style={{
+            width: "180px",
+            marginRight: "10px",
+            background: rotatable ? "#4caf50" : "",
+          }}
+        >
+          {rotatable ? "Rotation: Enabled" : "Rotation: Disabled"}
         </button>
-        <button onClick={solve} style={{ marginRight: "10px" }}>
-          Solve
-        </button>
-        <h2>Results</h2>
-        {results.dlxResults.map((result, index) => (
-          <Result key={index} pieces={results.piecesSnapshot} result={result} />
-        ))}
+        <button onClick={solve}>Solve</button>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          {results.dlxResults.map((result, index) => (
+            <Result
+              key={index}
+              pieces={results.piecesSnapshot}
+              result={result}
+            />
+          ))}
+        </div>
       </div>
     </>
   );
