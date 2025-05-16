@@ -3,7 +3,9 @@ import Grid from "./Grid";
 
 interface SelectorProps {
   handleSelectorChange: (selectedCells: number[][]) => void;
-  color?: string;
+  rows: number;
+  cols: number;
+  color: string;
 }
 
 const wrapperHeight = 320;
@@ -11,10 +13,10 @@ const wrapperWidth = 320;
 
 const Selector: React.FC<SelectorProps> = ({
   handleSelectorChange: handleSelectorChange,
-  color = "white",
+  rows,
+  cols,
+  color,
 }) => {
-  const [rows, setRows] = useState(5);
-  const [cols, setCols] = useState(5);
   const [selectedCells, setSelectedCells] = useState<number[][]>([]);
 
   useEffect(() => {
@@ -31,38 +33,6 @@ const Selector: React.FC<SelectorProps> = ({
     <div
       style={{ display: "inline-block", margin: "20px", touchAction: "none" }}
     >
-      <div style={{ marginBottom: "10px", textAlign: "center" }}>
-        <label>
-          Rows:
-          <input
-            type="number"
-            value={rows}
-            onChange={(e) => {
-              const newRows = Math.min(
-                99,
-                Math.max(1, parseInt(e.target.value) || 1)
-              );
-              setRows(newRows);
-            }}
-            style={{ width: "50px", marginLeft: "5px", marginRight: "10px" }}
-          />
-        </label>
-        <label>
-          Columns:
-          <input
-            type="number"
-            value={cols}
-            onChange={(e) => {
-              const newCols = Math.min(
-                99,
-                Math.max(1, parseInt(e.target.value) || 1)
-              );
-              setCols(newCols);
-            }}
-            style={{ width: "50px", marginLeft: "5px" }}
-          />
-        </label>
-      </div>
       <div
         style={{
           height: wrapperHeight,

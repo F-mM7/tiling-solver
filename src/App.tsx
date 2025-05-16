@@ -7,7 +7,7 @@ import { solver } from "./service/solver";
 import { colorSet } from "./service/colorSet";
 
 function App() {
-  const [selectors, setSelectors] = useState<number[]>([0]);
+  const [selectors, setSelectors] = useState<number[]>([0, 1]);
   const [board, setBoard] = useState<number[][]>([]);
   const [pieces, setPieces] = useState<Map<number, number[][]>>(new Map());
   const [results, setResults] = useState<{
@@ -15,6 +15,8 @@ function App() {
     piecesSnapshot: Map<number, number[][]>;
   }>({ dlxResults: [], piecesSnapshot: new Map() });
 
+  const [rows, setRows] = useState(5);
+  const [cols, setCols] = useState(5);
   const colors = colorSet(selectors.length);
 
   const handleBoardSelectorChange = (selectedCells: number[][]) => {
@@ -69,9 +71,46 @@ function App() {
   return (
     <>
       <title>Tiling Solver</title>
+      <div style={{ marginBottom: "10px", textAlign: "center" }}>
+        <label>
+          Rows:
+          <input
+            type="number"
+            value={rows}
+            onChange={(e) => {
+              const newRows = Math.min(
+                99,
+                Math.max(1, parseInt(e.target.value) || 1)
+              );
+              setRows(newRows);
+            }}
+            style={{ width: "50px", marginLeft: "5px", marginRight: "10px" }}
+          />
+        </label>
+        <label>
+          Columns:
+          <input
+            type="number"
+            value={cols}
+            onChange={(e) => {
+              const newCols = Math.min(
+                99,
+                Math.max(1, parseInt(e.target.value) || 1)
+              );
+              setCols(newCols);
+            }}
+            style={{ width: "50px", marginLeft: "5px" }}
+          />
+        </label>
+      </div>
       <div>
         <h1>board selector</h1>
-        <Selector handleSelectorChange={handleBoardSelectorChange}></Selector>
+        <Selector
+          handleSelectorChange={handleBoardSelectorChange}
+          rows={rows}
+          cols={cols}
+          color="white"
+        ></Selector>
       </div>
       <div style={{ marginBottom: "20px", textAlign: "center" }}>
         <h1>pieces selector</h1>
@@ -103,6 +142,8 @@ function App() {
               handleSelectorChange={(selectedCells) =>
                 handlePieceSelectorChange(id, selectedCells)
               }
+              rows={rows}
+              cols={cols}
               color={colors[id]}
             />
           </div>
