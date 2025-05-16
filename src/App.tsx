@@ -5,7 +5,6 @@ import type { Result as DlxResult } from "dancing-links";
 import { useState } from "react";
 import { solver } from "./service/solver";
 import { colorSet } from "./service/colorSet";
-//TODO rotatableを設定できるようにする
 function App() {
   const [selectors, setSelectors] = useState<number[]>([0]); // GridSelectorのリストを管理
   const [board, setBoard] = useState<number[][]>([]); // 選択されたセルの座標を管理

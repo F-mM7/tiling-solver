@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Cell from "./Cell";
+import GridBody from "./GridBody";
 
 interface GridProps {
   cellSize: number;
@@ -173,20 +173,16 @@ const Grid: React.FC<GridProps> = ({
   return (
     <div
       ref={ref}
-      style={{
-        height: cellSize * rows,
-        width: cellSize * cols,
-        display: "grid",
-        gridTemplateRows: `repeat(${rows}, 1fr)`,
-        gridTemplateColumns: `repeat(${cols}, 1fr)`,
-        cursor: "pointer",
-      }}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
+      style={{ cursor: "pointer" }}
     >
-      {colorMap.map((row) =>
-        row.map((cellColor) => <Cell color={cellColor} />)
-      )}
+      <GridBody
+        cellSize={cellSize}
+        rows={rows}
+        cols={cols}
+        colorMap={colorMap}
+      />
     </div>
   );
 };
