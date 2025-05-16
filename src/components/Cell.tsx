@@ -9,6 +9,7 @@ const Cell: React.FC<CellProps> = ({ color }) => {
     <div
       style={{
         backgroundColor: color,
+        margin: 0,
         border: "1px solid black",
       }}
     />
