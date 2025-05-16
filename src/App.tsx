@@ -21,11 +21,11 @@ function App() {
 
   const colors = colorSet(selectors);
 
-  const handleBoardSelectorChange = (selectedCells: number[][]) => {
+  const handleBoardChange = (selectedCells: number[][]) => {
     setBoard(selectedCells);
   };
 
-  const handlePieceSelectorChange = (id: number, selectedCells: number[][]) => {
+  const handlePieceChange = (id: number, selectedCells: number[][]) => {
     setPieces((prev) => {
       const existingCells = prev.get(id);
       if (
@@ -71,7 +71,7 @@ function App() {
           <Input label="Cols" value={cols} setValue={setCols} />
         </div>
         <Selector
-          handleSelectorChange={handleBoardSelectorChange}
+          handleChange={handleBoardChange}
           rows={rows}
           cols={cols}
           color="white"
@@ -87,8 +87,8 @@ function App() {
         {Array.from({ length: selectors }, (_, i) => (
           <div key={i}>
             <Selector
-              handleSelectorChange={(selectedCells) =>
-                handlePieceSelectorChange(i, selectedCells)
+              handleChange={(selectedCells) =>
+                handlePieceChange(i, selectedCells)
               }
               rows={rows}
               cols={cols}

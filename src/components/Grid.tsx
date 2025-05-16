@@ -6,7 +6,7 @@ interface GridProps {
   rows: number;
   cols: number;
   color?: string;
-  handleGridChange?: (cells: number[][]) => void;
+  handleChange: (cells: number[][]) => void;
 }
 
 const Grid: React.FC<GridProps> = ({
@@ -14,7 +14,7 @@ const Grid: React.FC<GridProps> = ({
   rows,
   cols,
   color = "white",
-  handleGridChange = () => {},
+  handleChange: handleChange,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isSelecting, setIsSelecting] = useState(false);
@@ -24,8 +24,8 @@ const Grid: React.FC<GridProps> = ({
   const [currentSelection, setCurrentSelection] = useState<number[][]>([]);
 
   useEffect(() => {
-    handleGridChange(selectedCells);
-  }, [selectedCells, handleGridChange]);
+    handleChange(selectedCells);
+  }, [selectedCells, handleChange]);
 
   useEffect(() => {
     setSelectedCells((prev) =>
