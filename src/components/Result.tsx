@@ -1,5 +1,5 @@
 import React from "react";
-import GridBody from "./GridBody";
+import Grid from "./Grid";
 import type { Result as DlxResult } from "dancing-links";
 import { colorSet } from "../service/colorSet";
 import { rotate, shift } from "../service/solver";
@@ -35,17 +35,10 @@ const Result: React.FC<ResultProps> = ({ pieces, result }) => {
     colorMap[r][c] = color;
   });
 
-  const cellSize = 320 / Math.max(rows, cols);
+  const cellSize = 256 / Math.max(rows, cols);
 
   return (
-    <div>
-      <GridBody
-        colorMap={colorMap}
-        rows={rows}
-        cols={cols}
-        cellSize={cellSize}
-      />
-    </div>
+    <Grid colorMap={colorMap} rows={rows} cols={cols} cellSize={cellSize} />
   );
 };
 
