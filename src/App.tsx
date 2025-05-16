@@ -1,6 +1,7 @@
 import "./App.css";
 import Selector from "./components/Selector";
 import Result from "./components/Result";
+import Input from "./components/Input";
 import type { Result as DlxResult } from "dancing-links";
 import { useState } from "react";
 import { solver } from "./service/solver";
@@ -48,7 +49,6 @@ function App() {
   const solve = () => {
     const piecesArray = Array.from(pieces.values());
     const results = solver(board, piecesArray, rotatable);
-    console.log(results);
     setResults({ dlxResults: results, piecesSnapshot: new Map(pieces) });
   };
 
@@ -71,40 +71,13 @@ function App() {
   return (
     <>
       <title>Tiling Solver</title>
-      <div style={{ marginBottom: "10px", textAlign: "center" }}>
-        <label>
-          Rows:
-          <input
-            type="number"
-            value={rows}
-            onChange={(e) => {
-              const newRows = Math.min(
-                99,
-                Math.max(1, parseInt(e.target.value) || 1)
-              );
-              setRows(newRows);
-            }}
-            style={{ width: "50px", marginLeft: "5px", marginRight: "10px" }}
-          />
-        </label>
-        <label>
-          Columns:
-          <input
-            type="number"
-            value={cols}
-            onChange={(e) => {
-              const newCols = Math.min(
-                99,
-                Math.max(1, parseInt(e.target.value) || 1)
-              );
-              setCols(newCols);
-            }}
-            style={{ width: "50px", marginLeft: "5px" }}
-          />
-        </label>
-      </div>
+
       <div>
         <h1>board selector</h1>
+        <div style={{ marginBottom: "10px", textAlign: "center" }}>
+          <Input label="Rows" value={rows} setValue={setRows} />
+          <Input label="Cols" value={cols} setValue={setCols} />
+        </div>
         <Selector
           handleSelectorChange={handleBoardSelectorChange}
           rows={rows}
@@ -136,7 +109,6 @@ function App() {
       >
         {selectors.map((id) => (
           <div>
-            <div>{id}</div>
             <Selector
               key={id}
               handleSelectorChange={(selectedCells) =>
