@@ -28,7 +28,9 @@ const Selector: React.FC<SelectorProps> = ({
   const cellSize = Math.min(wrapperHeight / rows, wrapperWidth / cols);
 
   return (
-    <div style={{ display: "inline-block", margin: "20px" }}>
+    <div
+      style={{ display: "inline-block", margin: "20px", touchAction: "none" }}
+    >
       <div style={{ marginBottom: "10px", textAlign: "center" }}>
         <label>
           Rows:
