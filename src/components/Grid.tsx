@@ -63,9 +63,13 @@ const Grid: React.FC<GridProps> = ({
     [rows, cols]
   );
 
-  const handleDown = (e: MouseEvent | TouchEvent) => {
+  const handleDown = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
     setIsSelecting(true);
-    const [row, col] = getCellFromEvent(e);
+    const [row, col] = getCellFromEvent(
+      "nativeEvent" in e ? (e as any).nativeEvent : e
+    );
     setStartCell([row, col]);
     setStartCellSelected(
       selectedCells.some(([r, c]) => r === row && c === col)
