@@ -50,7 +50,6 @@ function App() {
   const solve = () => {
     const piecesArray = Array.from(pieces.values());
     const results = solver(board, piecesArray, rotatable);
-    console.log("Results:", results);
     setResults({ dlxResults: results, piecesSnapshot: new Map(pieces) });
   };
 
