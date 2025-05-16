@@ -14,17 +14,14 @@ const Result: React.FC<ResultProps> = ({ pieces, result }) => {
   console.log(colors);
 
   const paintList: Map<number[], string> = new Map();
-  //     // TODO dataをJSONにする
+  //TODO dataをJSONにする
   result.forEach(({ data }) => {
     const [idx, rotateNum, shiftCoordinate] = data
       .split("-")
       .map((s) => JSON.parse(s));
 
-    const piece = pieces.get(idx); // pieces.get(idx)の結果を変数に格納
-    if (!piece) {
-      console.error(`Error: Piece not found for ID ${idx}`); // undefinedの場合の処理
-      return;
-    }
+    const piece = pieces.get(idx);
+    if (!piece) return;
 
     shift(rotate(piece, rotateNum), shiftCoordinate).forEach(([r, c]) => {
       paintList.set([r, c], colors[idx]);

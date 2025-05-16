@@ -44,7 +44,6 @@ const Grid: React.FC<GridProps> = ({
   });
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
     setIsSelecting(true);
 
     const rect = ref.current!.getBoundingClientRect();
@@ -62,7 +61,6 @@ const Grid: React.FC<GridProps> = ({
   };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault();
     setIsSelecting(true);
 
     const rect = ref.current!.getBoundingClientRect();
