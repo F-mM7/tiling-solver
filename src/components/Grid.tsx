@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import GridBody from "./GridBody";
 
 interface GridProps {
@@ -43,34 +43,30 @@ const Grid: React.FC<GridProps> = ({
       colorMap[r][c] = isStartCellSelected ? "gray" : color;
   });
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+  const getCellFromEvent = useCallback(
+    (e: MouseEvent | TouchEvent): [number, number] => {
+      console.log(e);
+      const rect = ref.current!.getBoundingClientRect();
+      let clientX: number, clientY: number;
+      if ("touches" in e) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      const offsetX = clientX - rect.left;
+      const offsetY = clientY - rect.top;
+      const row = Math.floor((offsetY / rect.height) * rows);
+      const col = Math.floor((offsetX / rect.width) * cols);
+      return [row, col];
+    },
+    [rows, cols]
+  );
+
+  const handleDown = (e: MouseEvent | TouchEvent) => {
     setIsSelecting(true);
-
-    const rect = ref.current!.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-
-    const row = Math.floor((offsetY / rect.height) * rows);
-    const col = Math.floor((offsetX / rect.width) * cols);
-
-    setStartCell([row, col]);
-    setStartCellSelected(
-      selectedCells.some(([r, c]) => r === row && c === col)
-    );
-    setCurrentSelection([[row, col]]);
-  };
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    setIsSelecting(true);
-
-    const rect = ref.current!.getBoundingClientRect();
-    const touch = e.touches[0];
-    const offsetX = touch.clientX - rect.left;
-    const offsetY = touch.clientY - rect.top;
-
-    const row = Math.floor((offsetY / rect.height) * rows);
-    const col = Math.floor((offsetX / rect.width) * cols);
-
+    const [row, col] = getCellFromEvent(e);
     setStartCell([row, col]);
     setStartCellSelected(
       selectedCells.some(([r, c]) => r === row && c === col)
@@ -79,13 +75,11 @@ const Grid: React.FC<GridProps> = ({
   };
 
   useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
+    const handleMove = (e: MouseEvent | TouchEvent) => {
       if (!ref.current) return;
       if (!isSelecting) return;
 
-      const rect = ref.current.getBoundingClientRect();
-      const row = Math.floor(((e.clientY - rect.top) / rect.height) * rows);
-      const col = Math.floor(((e.clientX - rect.left) / rect.width) * cols);
+      const [row, col] = getCellFromEvent(e);
       const [startRow, startCol] = startCell;
       const newSelection: number[][] = [];
       for (let r = Math.min(startRow, row); r <= Math.max(startRow, row); r++) {
@@ -94,39 +88,14 @@ const Grid: React.FC<GridProps> = ({
           c <= Math.max(startCol, col);
           c++
         ) {
-          if (r >= 0 && r < rows && c >= 0 && c < cols) {
+          if (r >= 0 && r < rows && c >= 0 && c < cols)
             newSelection.push([r, c]);
-          }
         }
       }
       setCurrentSelection(newSelection);
     };
 
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!ref.current) return;
-      if (!isSelecting) return;
-
-      const rect = ref.current.getBoundingClientRect();
-      const touch = e.touches[0];
-      const row = Math.floor(((touch.clientY - rect.top) / rect.height) * rows);
-      const col = Math.floor(((touch.clientX - rect.left) / rect.width) * cols);
-      const [startRow, startCol] = startCell;
-      const newSelection: number[][] = [];
-      for (let r = Math.min(startRow, row); r <= Math.max(startRow, row); r++) {
-        for (
-          let c = Math.min(startCol, col);
-          c <= Math.max(startCol, col);
-          c++
-        ) {
-          if (r >= 0 && r < rows && c >= 0 && c < cols) {
-            newSelection.push([r, c]);
-          }
-        }
-      }
-      setCurrentSelection(newSelection);
-    };
-
-    const handleGlobalMouseUp = () => {
+    const handleUp = () => {
       if (!ref.current) return;
       if (!isSelecting) return;
 
@@ -148,15 +117,15 @@ const Grid: React.FC<GridProps> = ({
       setIsSelecting(false);
     };
 
-    window.addEventListener("mousemove", handleGlobalMouseMove);
-    window.addEventListener("touchmove", handleTouchMove);
-    window.addEventListener("mouseup", handleGlobalMouseUp);
-    window.addEventListener("touchend", handleGlobalMouseUp);
+    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mouseup", handleUp);
+    window.addEventListener("touchmove", handleMove);
+    window.addEventListener("touchend", handleUp);
     return () => {
-      window.removeEventListener("mousemove", handleGlobalMouseMove);
-      window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("mouseup", handleGlobalMouseUp);
-      window.removeEventListener("touchend", handleGlobalMouseUp);
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mouseup", handleUp);
+      window.removeEventListener("touchmove", handleMove);
+      window.removeEventListener("touchend", handleUp);
     };
   }, [
     isSelecting,
@@ -166,13 +135,14 @@ const Grid: React.FC<GridProps> = ({
     selectedCells,
     isStartCellSelected,
     currentSelection,
+    getCellFromEvent,
   ]);
 
   return (
     <div
       ref={ref}
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
+      onMouseDown={handleDown}
+      onTouchStart={handleDown}
       style={{ cursor: "pointer" }}
     >
       <GridBody
