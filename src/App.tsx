@@ -3,12 +3,12 @@ import Selector from "./components/Selector";
 import Result from "./components/Result";
 import Input from "./components/Input";
 import type { Result as DlxResult } from "dancing-links";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { solver } from "./service/solver";
 import { colorSet } from "./service/colorSet";
 
 function App() {
-  const [selectors, setSelectors] = useState<number[]>([0, 1]);
+  const [selectors, setSelectors] = useState(2);
   const [board, setBoard] = useState<number[][]>([]);
   const [pieces, setPieces] = useState<Map<number, number[][]>>(new Map());
   const [results, setResults] = useState<{
@@ -18,7 +18,8 @@ function App() {
 
   const [rows, setRows] = useState(5);
   const [cols, setCols] = useState(5);
-  const colors = colorSet(selectors.length);
+
+  const colors = colorSet(selectors);
 
   const handleBoardSelectorChange = (selectedCells: number[][]) => {
     setBoard(selectedCells);
@@ -30,9 +31,9 @@ function App() {
       if (
         existingCells &&
         JSON.stringify(existingCells) === JSON.stringify(selectedCells)
-      ) {
+      )
         return prev;
-      } else {
+      else {
         const newPieces = new Map(prev);
         newPieces.set(id, selectedCells);
         return newPieces;
@@ -52,21 +53,12 @@ function App() {
     setResults({ dlxResults: results, piecesSnapshot: new Map(pieces) });
   };
 
-  const addSelector = () => {
-    setSelectors((prev) => [...prev, prev.length]);
-  };
-
-  const removeSelector = () => {
-    setSelectors((prev) => {
-      const updatedSelectors = prev.slice(0, -1);
-      setPieces((prevPieces) => {
-        const newPieces = new Map(prevPieces);
-        newPieces.delete(prev.length - 1);
-        return newPieces;
-      });
-      return updatedSelectors;
-    });
-  };
+  useEffect(() => {
+    if (pieces.size === selectors) return;
+    const newPieces = new Map<number, number[][]>();
+    for (let i = 0; i < selectors; i++) newPieces.set(i, pieces.get(i) ?? []);
+    setPieces(newPieces);
+  }, [pieces, selectors]);
 
   return (
     <>
@@ -87,41 +79,31 @@ function App() {
       </div>
       <div style={{ marginBottom: "20px", textAlign: "center" }}>
         <h1>pieces selector</h1>
-        <button onClick={addSelector} style={{ marginRight: "10px" }}>
-          Add Selector
-        </button>
-        <button
-          onClick={removeSelector}
-          disabled={selectors.length === 0}
-          style={{ marginRight: "10px" }}
-        >
-          Rem Selector
-        </button>
+        <Input label="Pieces" value={selectors} setValue={setSelectors} />
+      </div>
+      <div
+        style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+      >
+        {Array.from({ length: selectors }, (_, i) => (
+          <div key={i}>
+            <Selector
+              handleSelectorChange={(selectedCells) =>
+                handlePieceSelectorChange(i, selectedCells)
+              }
+              rows={rows}
+              cols={cols}
+              color={colors[i]}
+            ></Selector>
+          </div>
+        ))}
+      </div>
+      <div>
         <button onClick={toggleRotatable} style={{ marginRight: "10px" }}>
           {rotatable ? "Disable Rotation" : "Enable Rotation"}
         </button>
         <button onClick={solve} style={{ marginRight: "10px" }}>
           Solve
         </button>
-      </div>
-      <div
-        style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
-      >
-        {selectors.map((id) => (
-          <div>
-            <Selector
-              key={id}
-              handleSelectorChange={(selectedCells) =>
-                handlePieceSelectorChange(id, selectedCells)
-              }
-              rows={rows}
-              cols={cols}
-              color={colors[id]}
-            />
-          </div>
-        ))}
-      </div>
-      <div>
         <h2>Results</h2>
         {results.dlxResults.map((result, index) => (
           <Result key={index} pieces={results.piecesSnapshot} result={result} />
