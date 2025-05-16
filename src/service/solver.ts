@@ -53,6 +53,7 @@ const allArranges = (
   piece: number[][],
   rotatable = false
 ) => {
+  board = normalize(board);
   const arranges: Arrange[] = [];
 
   regalOrientations(piece, rotatable).forEach((orientation) => {
