@@ -11,7 +11,6 @@ export interface ResultProps {
 
 const Result: React.FC<ResultProps> = ({ pieces, result }) => {
   const colors = colorSet(pieces.size);
-  console.log(colors);
 
   const paintList: Map<number[], string> = new Map();
   //TODO dataをJSONにする
@@ -27,8 +26,6 @@ const Result: React.FC<ResultProps> = ({ pieces, result }) => {
       paintList.set([r, c], colors[idx]);
     });
   });
-
-  console.log(paintList);
 
   const rows = Math.max(...Array.from(paintList.keys()).map(([r]) => r)) + 1;
   const cols = Math.max(...Array.from(paintList.keys()).map(([, c]) => c)) + 1;

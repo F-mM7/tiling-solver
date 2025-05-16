@@ -45,7 +45,6 @@ const Grid: React.FC<GridProps> = ({
 
   const getCellFromEvent = useCallback(
     (e: MouseEvent | TouchEvent): [number, number] => {
-      console.log(e);
       const rect = ref.current!.getBoundingClientRect();
       let clientX: number, clientY: number;
       if ("touches" in e) {
