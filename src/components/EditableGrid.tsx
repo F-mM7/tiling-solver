@@ -44,18 +44,10 @@ const EditableGrid: React.FC<EditableGridProps> = ({
   });
 
   const getCellFromEvent = useCallback(
-    (e: MouseEvent | TouchEvent): [number, number] => {
+    (e: PointerEvent) => {
       const rect = ref.current!.getBoundingClientRect();
-      let clientX: number, clientY: number;
-      if ("touches" in e) {
-        clientX = e.touches[0].clientX;
-        clientY = e.touches[0].clientY;
-      } else {
-        clientX = e.clientX;
-        clientY = e.clientY;
-      }
-      const offsetX = clientX - rect.left;
-      const offsetY = clientY - rect.top;
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
       const row = Math.floor((offsetY / rect.height) * rows);
       const col = Math.floor((offsetX / rect.width) * cols);
       return [row, col];
@@ -63,11 +55,9 @@ const EditableGrid: React.FC<EditableGridProps> = ({
     [rows, cols]
   );
 
-  const handleDown = (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-  ) => {
+  const handleDown = (e: React.PointerEvent) => {
     setIsSelecting(true);
-    const [row, col] = getCellFromEvent("nativeEvent" in e ? e.nativeEvent : e);
+    const [row, col] = getCellFromEvent(e.nativeEvent);
     setStartCell([row, col]);
     setStartCellSelected(
       selectedCells.some(([r, c]) => r === row && c === col)
@@ -76,7 +66,7 @@ const EditableGrid: React.FC<EditableGridProps> = ({
   };
 
   useEffect(() => {
-    const handleMove = (e: MouseEvent | TouchEvent) => {
+    const handleMove = (e: PointerEvent) => {
       if (!ref.current) return;
       if (!isSelecting) return;
 
@@ -118,14 +108,12 @@ const EditableGrid: React.FC<EditableGridProps> = ({
       setIsSelecting(false);
     };
 
-    window.addEventListener("mousemove", handleMove);
-    window.addEventListener("mouseup", handleUp);
-    window.addEventListener("touchmove", handleMove);
+    window.addEventListener("pointermove", handleMove);
+    window.addEventListener("pointerup", handleUp);
     window.addEventListener("touchend", handleUp);
     return () => {
-      window.removeEventListener("mousemove", handleMove);
-      window.removeEventListener("mouseup", handleUp);
-      window.removeEventListener("touchmove", handleMove);
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleUp);
       window.removeEventListener("touchend", handleUp);
     };
   }, [
@@ -142,8 +130,7 @@ const EditableGrid: React.FC<EditableGridProps> = ({
   return (
     <div
       ref={ref}
-      onMouseDown={handleDown}
-      onTouchStart={handleDown}
+      onPointerDown={handleDown}
       className="grid-wrapper"
       style={{
         cursor: "pointer",
