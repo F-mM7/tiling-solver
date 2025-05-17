@@ -144,10 +144,10 @@ const EditableGrid: React.FC<EditableGridProps> = ({
       ref={ref}
       onMouseDown={handleDown}
       onTouchStart={handleDown}
+      className="grid-wrapper"
       style={{
         cursor: "pointer",
         touchAction: "none",
-        display: "inline-block",
       }}
     >
       <Grid cellSize={cellSize} rows={rows} cols={cols} colorMap={colorMap} />

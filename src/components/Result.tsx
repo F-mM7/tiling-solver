@@ -38,7 +38,9 @@ const Result: React.FC<ResultProps> = ({ pieces, result }) => {
   const cellSize = 256 / Math.max(rows, cols);
 
   return (
-    <Grid colorMap={colorMap} rows={rows} cols={cols} cellSize={cellSize} />
+    <div className="grid-wrapper">
+      <Grid colorMap={colorMap} rows={rows} cols={cols} cellSize={cellSize} />
+    </div>
   );
 };
 

@@ -8,8 +8,6 @@
   width: 100%;
 }
 
-.flex {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+.grid-wrapper {
+  display: inline-block;
 }

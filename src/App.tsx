@@ -82,7 +82,9 @@ function App() {
       </div>
       <div>
         <h1>pieces selector</h1>
-        <Input label="Pieces" value={selectors} setValue={setSelectors} />
+        <div>
+          <Input label="Pieces" value={selectors} setValue={setSelectors} />
+        </div>
         <div>
           {Array.from({ length: selectors }, (_, i) => (
             <EditableGrid
@@ -99,21 +101,21 @@ function App() {
       </div>
       <div>
         <h1>Results</h1>
-        <button
-          onClick={toggleRotatable}
-          style={{
-            width: "180px",
-            background: rotatable ? "#4caf50" : "",
-          }}
-        >
-          {rotatable ? "Rotation: Enabled" : "Rotation: Disabled"}
-        </button>
-        <button onClick={solve}>Solve</button>
-        <div className="flex">
+        <div>
+          <button
+            onClick={toggleRotatable}
+            style={{
+              width: "180px",
+              background: rotatable ? "#4caf50" : "",
+            }}
+          >
+            {rotatable ? "Rotation: Enabled" : "Rotation: Disabled"}
+          </button>
+          <button onClick={solve}>Solve</button>
+        </div>
+        <div>
           {results.dlxResults.map((result) => (
-            <div>
-              <Result pieces={results.piecesSnapshot} result={result} />
-            </div>
+            <Result pieces={results.piecesSnapshot} result={result} />
           ))}
         </div>
       </div>
