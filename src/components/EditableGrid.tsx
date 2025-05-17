@@ -17,10 +17,11 @@ const EditableGrid: React.FC<EditableGridProps> = ({
   handleChange: handleChange,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [selectedCells, setSelectedCells] = useState<number[][]>([]);
+
   const [isSelecting, setIsSelecting] = useState(false);
   const [startCell, setStartCell] = useState<[number, number]>([-1, -1]);
   const [isStartCellSelected, setStartCellSelected] = useState(false);
-  const [selectedCells, setSelectedCells] = useState<number[][]>([]);
   const [currentSelection, setCurrentSelection] = useState<number[][]>([]);
 
   useEffect(() => {
@@ -37,7 +38,6 @@ const EditableGrid: React.FC<EditableGridProps> = ({
   selectedCells.forEach(([r, c]) => {
     if (r < rows && c < cols) colorMap[r][c] = color;
   });
-
   currentSelection.forEach(([r, c]) => {
     if (r < rows && c < cols)
       colorMap[r][c] = isStartCellSelected ? "gray" : color;
@@ -67,9 +67,7 @@ const EditableGrid: React.FC<EditableGridProps> = ({
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
   ) => {
     setIsSelecting(true);
-    const [row, col] = getCellFromEvent(
-      "nativeEvent" in e ? (e as any).nativeEvent : e
-    );
+    const [row, col] = getCellFromEvent("nativeEvent" in e ? e.nativeEvent : e);
     setStartCell([row, col]);
     setStartCellSelected(
       selectedCells.some(([r, c]) => r === row && c === col)
