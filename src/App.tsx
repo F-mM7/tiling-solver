@@ -11,7 +11,9 @@ function App() {
   const [rows, setRows] = useState(4);
   const [cols, setCols] = useState(4);
   const [board, setBoard] = useState<number[][]>([]);
-  const [pieces, setPieces] = useState<number[][][]>([[], []]);
+  const [pieces, setPieces] = useState<number[][][]>([[], [], [], []]);
+  const [rotatable, setRotatable] = useState(false);
+
   const [results, setResults] = useState<{
     dlxResults: DlxResult<string>[][];
     piecesSnapshot: number[][][];
@@ -49,8 +51,6 @@ function App() {
       }
     });
   };
-
-  const [rotatable, setRotatable] = useState(false);
 
   const toggleRotatable = () => {
     setRotatable((prev) => !prev);
@@ -121,7 +121,63 @@ function App() {
           >
             {rotatable ? "Rotation: Enabled" : "Rotation: Disabled"}
           </button>
-          <button onClick={solve}>Solve</button>
+          <button
+            onClick={() => {
+              setRows(4);
+              setCols(5);
+              setBoard([
+                [0, 0],
+                [0, 1],
+                [0, 2],
+                [0, 3],
+                [0, 4],
+                [1, 0],
+                [1, 1],
+                [1, 2],
+                [1, 3],
+                [2, 0],
+                [2, 2],
+                [2, 3],
+                [3, 0],
+                [3, 1],
+                [3, 2],
+                [3, 3],
+              ]);
+              setPieces([
+                [
+                  [1, 2],
+                  [1, 3],
+                  [2, 1],
+                  [2, 2],
+                ],
+                [
+                  [0, 1],
+                  [1, 1],
+                  [2, 1],
+                  [2, 2],
+                ],
+                [
+                  [1, 1],
+                  [1, 2],
+                  [2, 1],
+                  [2, 2],
+                ],
+                [
+                  [1, 1],
+                  [1, 2],
+                  [1, 3],
+                  [2, 2],
+                ],
+              ]);
+              setRotatable(true);
+            }}
+            style={{ marginLeft: "8px", width: "100px" }}
+          >
+            Sample
+          </button>
+          <button onClick={solve} style={{ marginLeft: "8px" }}>
+            Solve
+          </button>
         </div>
         <div>
           {results.dlxResults.map((result) => (
