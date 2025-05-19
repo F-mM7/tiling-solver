@@ -170,13 +170,10 @@ function App() {
               ]);
               setRotatable(true);
             }}
-            style={{ marginLeft: "8px", width: "100px" }}
           >
             Sample
           </button>
-          <button onClick={solve} style={{ marginLeft: "8px" }}>
-            Solve
-          </button>
+          <button onClick={solve}>Solve</button>
         </div>
         <div>
           {results.dlxResults.map((result, idx) => (
