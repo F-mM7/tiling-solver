@@ -13,7 +13,6 @@ interface Arrange {
   shift: number[];
 }
 
-// 追加: PieceArrangeData型を定義
 export interface PieceArrangeData {
   idx: number;
   rotateNum: number;
