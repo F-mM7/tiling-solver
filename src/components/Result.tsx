@@ -13,14 +13,11 @@ const Result: React.FC<ResultProps> = ({ pieces, result }) => {
   const colors = colorSet(pieces.length);
 
   const paintList: Map<number[], string> = new Map();
-  result.forEach(({ data }) => {
-    const { idx, rotateNum, shiftCoordinate } = data;
-
-    const piece = pieces[idx];
+  result.forEach(({ data: { i, rotateNum, shiftBase } }) => {
+    const piece = pieces[i];
     if (!piece) return;
-
-    shift(rotate(piece, rotateNum), shiftCoordinate).forEach(([r, c]) => {
-      paintList.set([r, c], colors[idx]);
+    shift(rotate(piece, rotateNum), shiftBase).forEach(([r, c]) => {
+      paintList.set([r, c], colors[i]);
     });
   });
 
