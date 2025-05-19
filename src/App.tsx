@@ -66,6 +66,73 @@ function App() {
       <title>Tiling Solver</title>
 
       <div>
+        <button
+          onClick={() => {
+            setRows(4);
+            setCols(5);
+            setBoard([
+              [0, 0],
+              [0, 1],
+              [0, 2],
+              [0, 3],
+              [0, 4],
+              [1, 0],
+              [1, 1],
+              [1, 2],
+              [1, 3],
+              [2, 0],
+              [2, 2],
+              [2, 3],
+              [3, 0],
+              [3, 1],
+              [3, 2],
+              [3, 3],
+            ]);
+            setPieces([
+              [
+                [1, 2],
+                [1, 3],
+                [2, 1],
+                [2, 2],
+              ],
+              [
+                [0, 1],
+                [1, 1],
+                [2, 1],
+                [2, 2],
+              ],
+              [
+                [1, 1],
+                [1, 2],
+                [2, 1],
+                [2, 2],
+              ],
+              [
+                [1, 1],
+                [1, 2],
+                [1, 3],
+                [2, 2],
+              ],
+            ]);
+            setRotatable(true);
+          }}
+        >
+          Sample
+        </button>
+        <button
+          onClick={() => {
+            setRows(4);
+            setCols(4);
+            setBoard([]);
+            setPieces([[], []]);
+            setRotatable(false);
+            setResults({ dlxResults: [], piecesSnapshot: [] });
+          }}
+        >
+          Clear
+        </button>
+      </div>
+      <div>
         <h1>board selector</h1>
         <div>
           <Input label="Rows" value={rows} setValue={setRows} />
@@ -120,59 +187,7 @@ function App() {
           >
             {rotatable ? "Rotation: Enabled" : "Rotation: Disabled"}
           </button>
-          <button
-            onClick={() => {
-              setRows(4);
-              setCols(5);
-              setBoard([
-                [0, 0],
-                [0, 1],
-                [0, 2],
-                [0, 3],
-                [0, 4],
-                [1, 0],
-                [1, 1],
-                [1, 2],
-                [1, 3],
-                [2, 0],
-                [2, 2],
-                [2, 3],
-                [3, 0],
-                [3, 1],
-                [3, 2],
-                [3, 3],
-              ]);
-              setPieces([
-                [
-                  [1, 2],
-                  [1, 3],
-                  [2, 1],
-                  [2, 2],
-                ],
-                [
-                  [0, 1],
-                  [1, 1],
-                  [2, 1],
-                  [2, 2],
-                ],
-                [
-                  [1, 1],
-                  [1, 2],
-                  [2, 1],
-                  [2, 2],
-                ],
-                [
-                  [1, 1],
-                  [1, 2],
-                  [1, 3],
-                  [2, 2],
-                ],
-              ]);
-              setRotatable(true);
-            }}
-          >
-            Sample
-          </button>
+
           <button onClick={solve}>Solve</button>
         </div>
         <div>
