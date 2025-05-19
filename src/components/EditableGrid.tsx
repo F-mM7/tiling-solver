@@ -6,6 +6,7 @@ interface EditableGridProps {
   rows: number;
   cols: number;
   color?: string;
+  selectedCells: number[][];
   handleChange: (cells: number[][]) => void;
 }
 
@@ -14,25 +15,15 @@ const EditableGrid: React.FC<EditableGridProps> = ({
   rows,
   cols,
   color = "white",
+  selectedCells,
   handleChange: handleChange,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [selectedCells, setSelectedCells] = useState<number[][]>([]);
 
   const [isSelecting, setIsSelecting] = useState(false);
   const [startCell, setStartCell] = useState<[number, number]>([-1, -1]);
   const [isStartCellSelected, setStartCellSelected] = useState(false);
   const [currentSelection, setCurrentSelection] = useState<number[][]>([]);
-
-  useEffect(() => {
-    handleChange(selectedCells);
-  }, [selectedCells, handleChange]);
-
-  useEffect(() => {
-    setSelectedCells((prev) =>
-      prev.filter(([r, c]) => r >= 0 && r < rows && c >= 0 && c < cols)
-    );
-  }, [rows, cols]);
 
   const colorMap = Array.from({ length: rows }, () => Array(cols).fill("gray"));
   selectedCells.forEach(([r, c]) => {
@@ -90,20 +81,24 @@ const EditableGrid: React.FC<EditableGridProps> = ({
       if (!ref.current) return;
       if (!isSelecting) return;
 
-      setSelectedCells((prev) => {
-        if (isStartCellSelected) {
-          return prev.filter(
-            ([r, c]) =>
-              !currentSelection.some(([nr, nc]) => nr === r && nc === c)
-          );
-        } else {
-          const cellSet = new Set(prev.map(([r, c]) => `${r},${c}`));
-          currentSelection.forEach(([r, c]) => cellSet.add(`${r},${c}`));
-          return Array.from(cellSet)
-            .map((key) => key.split(",").map(Number) as [number, number])
-            .filter(([r, c]) => r >= 0 && r < rows && c >= 0 && c < cols);
-        }
-      });
+      let newSelectedCells: number[][];
+      const selectionSet = new Set(
+        currentSelection.map(([r, c]) => `${r},${c}`)
+      );
+      if (isStartCellSelected) {
+        newSelectedCells = selectedCells.filter(
+          ([r, c]) => !selectionSet.has(`${r},${c}`)
+        );
+      } else {
+        const cellSet = new Set(selectedCells.map(([r, c]) => `${r},${c}`));
+        currentSelection.forEach(([r, c]) => cellSet.add(`${r},${c}`));
+        newSelectedCells = Array.from(cellSet)
+          .map((key) => key.split(",").map(Number) as [number, number])
+          .filter(([r, c]) => r >= 0 && r < rows && c >= 0 && c < cols);
+      }
+
+      console.log(newSelectedCells);
+      handleChange(newSelectedCells);
 
       setIsSelecting(false);
     };
@@ -125,6 +120,7 @@ const EditableGrid: React.FC<EditableGridProps> = ({
     isStartCellSelected,
     currentSelection,
     getCellFromEvent,
+    handleChange,
   ]);
 
   return (

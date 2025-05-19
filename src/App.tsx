@@ -8,20 +8,27 @@ import { colorSet } from "./service/colorSet";
 import EditableGrid from "./components/EditableGrid";
 
 function App() {
-  const [selectors, setSelectors] = useState(5);
+  const [rows, setRows] = useState(4);
+  const [cols, setCols] = useState(4);
   const [board, setBoard] = useState<number[][]>([]);
-  const [pieces, setPieces] = useState<Map<number, number[][]>>(new Map());
+  const [pieces, setPieces] = useState<number[][][]>([[], []]);
   const [results, setResults] = useState<{
     dlxResults: DlxResult<string>[][];
-    piecesSnapshot: Map<number, number[][]>;
-  }>({ dlxResults: [], piecesSnapshot: new Map() });
+    piecesSnapshot: number[][][];
+  }>({ dlxResults: [], piecesSnapshot: [] });
 
-  const [rows, setRows] = useState(5);
-  const [cols, setCols] = useState(5);
+  useEffect(() => {
+    setPieces((prev) => {
+      prev.forEach((piece) => {
+        piece.filter(([r, c]) => r >= 0 && r < rows && c >= 0 && c < cols);
+      });
+      return prev;
+    });
+  }, [rows, cols]);
 
   const cellSize = 256 / Math.max(rows, cols);
 
-  const colors = colorSet(selectors);
+  const colors = colorSet(pieces.length);
 
   const handleBoardChange = (selectedCells: number[][]) => {
     setBoard(selectedCells);
@@ -29,15 +36,15 @@ function App() {
 
   const handlePieceChange = (id: number, selectedCells: number[][]) => {
     setPieces((prev) => {
-      const existingCells = prev.get(id);
+      const existingCells = prev[id];
       if (
         existingCells &&
         JSON.stringify(existingCells) === JSON.stringify(selectedCells)
       )
         return prev;
       else {
-        const newPieces = new Map(prev);
-        newPieces.set(id, selectedCells);
+        const newPieces = [...prev];
+        newPieces[id] = selectedCells;
         return newPieces;
       }
     });
@@ -52,15 +59,8 @@ function App() {
   const solve = () => {
     const piecesArray = Array.from(pieces.values());
     const results = solver(board, piecesArray, rotatable);
-    setResults({ dlxResults: results, piecesSnapshot: new Map(pieces) });
+    setResults({ dlxResults: results, piecesSnapshot: pieces });
   };
-
-  useEffect(() => {
-    if (pieces.size === selectors) return;
-    const newPieces = new Map<number, number[][]>();
-    for (let i = 0; i < selectors; i++) newPieces.set(i, pieces.get(i) ?? []);
-    setPieces(newPieces);
-  }, [pieces, selectors]);
 
   return (
     <>
@@ -77,16 +77,25 @@ function App() {
           cellSize={cellSize}
           rows={rows}
           cols={cols}
+          selectedCells={board}
           color="white"
         ></EditableGrid>
       </div>
       <div>
         <h1>pieces selector</h1>
         <div>
-          <Input label="Pieces" value={selectors} setValue={setSelectors} />
+          <Input
+            label="Pieces"
+            value={pieces.length}
+            setValue={(num) => {
+              const newPieces = [];
+              for (let i = 0; i < num; i++) newPieces[i] = pieces[i] ?? [];
+              setPieces(newPieces);
+            }}
+          />
         </div>
         <div>
-          {Array.from({ length: selectors }, (_, i) => (
+          {Array.from({ length: pieces.length }, (_, i) => (
             <EditableGrid
               handleChange={(selectedCells) =>
                 handlePieceChange(i, selectedCells)
@@ -94,6 +103,7 @@ function App() {
               rows={rows}
               cols={cols}
               cellSize={cellSize}
+              selectedCells={pieces[i]}
               color={colors[i]}
             ></EditableGrid>
           ))}

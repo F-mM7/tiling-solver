@@ -5,12 +5,12 @@ import { colorSet } from "../service/colorSet";
 import { rotate, shift } from "../service/solver";
 
 export interface ResultProps {
-  pieces: Map<number, number[][]>;
+  pieces: number[][][];
   result: DlxResult<string>[];
 }
 
 const Result: React.FC<ResultProps> = ({ pieces, result }) => {
-  const colors = colorSet(pieces.size);
+  const colors = colorSet(pieces.length);
 
   const paintList: Map<number[], string> = new Map();
   //TODO dataをJSONにする
@@ -19,7 +19,7 @@ const Result: React.FC<ResultProps> = ({ pieces, result }) => {
       .split("-")
       .map((s) => JSON.parse(s));
 
-    const piece = pieces.get(idx);
+    const piece = pieces[idx];
     if (!piece) return;
 
     shift(rotate(piece, rotateNum), shiftCoordinate).forEach(([r, c]) => {
