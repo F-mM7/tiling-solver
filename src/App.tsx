@@ -20,12 +20,11 @@ function App() {
   }>({ dlxResults: [], piecesSnapshot: [] });
 
   useEffect(() => {
-    setPieces((prev) => {
-      prev.forEach((piece) => {
-        piece.filter(([r, c]) => r >= 0 && r < rows && c >= 0 && c < cols);
-      });
-      return prev;
-    });
+    setPieces((prev) =>
+      prev.map((piece) =>
+        piece.filter(([r, c]) => r >= 0 && r < rows && c >= 0 && c < cols)
+      )
+    );
   }, [rows, cols]);
 
   const cellSize = 256 / Math.max(rows, cols);
@@ -180,8 +179,8 @@ function App() {
           </button>
         </div>
         <div>
-          {results.dlxResults.map((result) => (
-            <Result pieces={results.piecesSnapshot} result={result} />
+          {results.dlxResults.map((result, idx) => (
+            <Result key={idx} pieces={results.piecesSnapshot} result={result} />
           ))}
         </div>
       </div>
