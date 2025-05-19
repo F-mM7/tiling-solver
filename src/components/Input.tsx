@@ -17,8 +17,8 @@ const Input: React.FC<InputProps> = ({
 }) => (
   <label>
     {label} : {value}
-    <button onClick={() => setValue(Math.min(max, value + 1))}>＋</button>
-    <button onClick={() => setValue(Math.max(min, value - 1))}>−</button>
+    <button onClick={() => setValue(Math.min(max, value + 1))}>+</button>
+    <button onClick={() => setValue(Math.max(min, value - 1))}>-</button>
   </label>
 );
 
