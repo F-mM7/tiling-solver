@@ -63,8 +63,6 @@ function App() {
 
   return (
     <>
-      <title>Tiling Solver</title>
-
       <div>
         <button
           onClick={() => {
