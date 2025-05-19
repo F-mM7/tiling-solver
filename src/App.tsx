@@ -1,11 +1,11 @@
 import "./App.css";
 import Result from "./components/Result";
-import Input from "./components/Input";
 import type { Result as DlxResult } from "dancing-links";
 import { useEffect, useState } from "react";
 import { solver, type PieceArrangeData } from "./service/solver";
 import { colorSet } from "./service/colorSet";
-import EditableGrid from "./components/EditableGrid";
+import BoardSelector from "./components/BoardSelector";
+import PiecesSelector from "./components/PiecesSelector";
 
 function App() {
   const [rows, setRows] = useState(4);
@@ -130,49 +130,24 @@ function App() {
           Clear
         </button>
       </div>
-      <div>
-        <h1>board selector</h1>
-        <div>
-          <Input label="Rows" value={rows} setValue={setRows} />
-          <Input label="Cols" value={cols} setValue={setCols} />
-        </div>
-        <EditableGrid
-          handleChange={handleBoardChange}
-          cellSize={cellSize}
-          rows={rows}
-          cols={cols}
-          selectedCells={board}
-          color="white"
-        ></EditableGrid>
-      </div>
-      <div>
-        <h1>pieces selector</h1>
-        <div>
-          <Input
-            label="Pieces"
-            value={pieces.length}
-            setValue={(num) => {
-              const newPieces = [];
-              for (let i = 0; i < num; i++) newPieces[i] = pieces[i] ?? [];
-              setPieces(newPieces);
-            }}
-          />
-        </div>
-        <div>
-          {Array.from({ length: pieces.length }, (_, i) => (
-            <EditableGrid
-              handleChange={(selectedCells) =>
-                handlePieceChange(i, selectedCells)
-              }
-              rows={rows}
-              cols={cols}
-              cellSize={cellSize}
-              selectedCells={pieces[i]}
-              color={colors[i]}
-            ></EditableGrid>
-          ))}
-        </div>
-      </div>
+      <BoardSelector
+        rows={rows}
+        cols={cols}
+        setRows={setRows}
+        setCols={setCols}
+        cellSize={cellSize}
+        board={board}
+        handleBoardChange={handleBoardChange}
+      />
+      <PiecesSelector
+        pieces={pieces}
+        setPieces={setPieces}
+        rows={rows}
+        cols={cols}
+        cellSize={cellSize}
+        colors={colors}
+        handlePieceChange={handlePieceChange}
+      />
       <div>
         <h1>Results</h1>
         <div>
