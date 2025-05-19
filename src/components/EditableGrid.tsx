@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import Grid from "./Grid";
 
 interface EditableGridProps {
@@ -25,18 +31,22 @@ const EditableGrid: React.FC<EditableGridProps> = ({
   const [isStartCellSelected, setStartCellSelected] = useState(false);
   const [currentSelection, setCurrentSelection] = useState<number[][]>([]);
 
-  const colorMap = Array.from({ length: rows }, () => Array(cols).fill("gray"));
-  selectedCells.forEach(([r, c]) => {
-    if (r < rows && c < cols) colorMap[r][c] = color;
-  });
-  currentSelection.forEach(([r, c]) => {
-    if (r < rows && c < cols)
-      colorMap[r][c] = isStartCellSelected ? "gray" : color;
-  });
+  const colorMap = useMemo(() => {
+    const map = Array.from({ length: rows }, () => Array(cols).fill("gray"));
+    selectedCells.forEach(([r, c]) => {
+      if (r < rows && c < cols) map[r][c] = color;
+    });
+    currentSelection.forEach(([r, c]) => {
+      if (r < rows && c < cols)
+        map[r][c] = isStartCellSelected ? "gray" : color;
+    });
+    return map;
+  }, [rows, cols, color, selectedCells, currentSelection, isStartCellSelected]);
 
   const getCellFromEvent = useCallback(
     (e: PointerEvent) => {
-      const rect = ref.current!.getBoundingClientRect();
+      if (!ref.current) return [-1, -1];
+      const rect = ref.current.getBoundingClientRect();
       const offsetX = e.clientX - rect.left;
       const offsetY = e.clientY - rect.top;
       const row = Math.floor((offsetY / rect.height) * rows);
@@ -46,15 +56,18 @@ const EditableGrid: React.FC<EditableGridProps> = ({
     [rows, cols]
   );
 
-  const handleDown = (e: React.PointerEvent) => {
-    setIsSelecting(true);
-    const [row, col] = getCellFromEvent(e.nativeEvent);
-    setStartCell([row, col]);
-    setStartCellSelected(
-      selectedCells.some(([r, c]) => r === row && c === col)
-    );
-    setCurrentSelection([[row, col]]);
-  };
+  const handleDown = useCallback(
+    (e: React.PointerEvent) => {
+      setIsSelecting(true);
+      const [row, col] = getCellFromEvent(e.nativeEvent);
+      setStartCell([row, col]);
+      setStartCellSelected(
+        selectedCells.some(([r, c]) => r === row && c === col)
+      );
+      setCurrentSelection([[row, col]]);
+    },
+    [getCellFromEvent, selectedCells]
+  );
 
   useEffect(() => {
     const handleMove = (e: PointerEvent) => {
@@ -97,7 +110,6 @@ const EditableGrid: React.FC<EditableGridProps> = ({
           .filter(([r, c]) => r >= 0 && r < rows && c >= 0 && c < cols);
       }
 
-      console.log(newSelectedCells);
       handleChange(newSelectedCells);
 
       setIsSelecting(false);
