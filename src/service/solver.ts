@@ -13,6 +13,13 @@ interface Arrange {
   shift: number[];
 }
 
+// 追加: PieceArrangeData型を定義
+export interface PieceArrangeData {
+  idx: number;
+  rotateNum: number;
+  shiftCoordinate: number[];
+}
+
 export const normalize = (coordinates: number[][]) => {
   coordinates.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
   const minRow = Math.min(...coordinates.map(([r]) => r));
@@ -91,7 +98,11 @@ export const solver = (
       const idx_vector: BinaryNumber[] = Array(pieces.length).fill(0);
       idx_vector[piece_idx] = 1;
       const constraint: Constraint = {
-        data: `${piece_idx}-${arrange.rotate}-[${arrange.shift}]`,
+        data: {
+          idx: piece_idx,
+          rotateNum: arrange.rotate,
+          shiftCoordinate: arrange.shift,
+        } as PieceArrangeData,
         primaryRow: arrange.vector,
         secondaryRow: idx_vector,
       };

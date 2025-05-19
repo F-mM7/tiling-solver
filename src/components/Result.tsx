@@ -2,22 +2,19 @@ import React from "react";
 import Grid from "./Grid";
 import type { Result as DlxResult } from "dancing-links";
 import { colorSet } from "../service/colorSet";
-import { rotate, shift } from "../service/solver";
+import { rotate, shift, type PieceArrangeData } from "../service/solver";
 
 export interface ResultProps {
   pieces: number[][][];
-  result: DlxResult<string>[];
+  result: DlxResult<PieceArrangeData>[];
 }
 
 const Result: React.FC<ResultProps> = ({ pieces, result }) => {
   const colors = colorSet(pieces.length);
 
   const paintList: Map<number[], string> = new Map();
-  //TODO dataをJSONにする
   result.forEach(({ data }) => {
-    const [idx, rotateNum, shiftCoordinate] = data
-      .split("-")
-      .map((s) => JSON.parse(s));
+    const { idx, rotateNum, shiftCoordinate } = data;
 
     const piece = pieces[idx];
     if (!piece) return;

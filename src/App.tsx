@@ -3,7 +3,7 @@ import Result from "./components/Result";
 import Input from "./components/Input";
 import type { Result as DlxResult } from "dancing-links";
 import { useEffect, useState } from "react";
-import { solver } from "./service/solver";
+import { solver, type PieceArrangeData } from "./service/solver";
 import { colorSet } from "./service/colorSet";
 import EditableGrid from "./components/EditableGrid";
 
@@ -15,7 +15,7 @@ function App() {
   const [rotatable, setRotatable] = useState(false);
 
   const [results, setResults] = useState<{
-    dlxResults: DlxResult<string>[][];
+    dlxResults: DlxResult<PieceArrangeData>[][];
     piecesSnapshot: number[][][];
   }>({ dlxResults: [], piecesSnapshot: [] });
 
