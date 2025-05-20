@@ -36,12 +36,21 @@ const EditableGrid: React.FC<EditableGridProps> = ({
     selectedCells.forEach(([r, c]) => {
       if (r < rows && c < cols) map[r][c] = color;
     });
-    currentSelection.forEach(([r, c]) => {
-      if (r < rows && c < cols)
-        map[r][c] = isStartCellSelected ? "gray" : color;
-    });
+    if (isSelecting)
+      currentSelection.forEach(([r, c]) => {
+        if (r < rows && c < cols)
+          map[r][c] = isStartCellSelected ? "gray" : color;
+      });
     return map;
-  }, [rows, cols, color, selectedCells, currentSelection, isStartCellSelected]);
+  }, [
+    rows,
+    selectedCells,
+    isSelecting,
+    currentSelection,
+    cols,
+    color,
+    isStartCellSelected,
+  ]);
 
   const getCellFromEvent = useCallback(
     (e: PointerEvent) => {
