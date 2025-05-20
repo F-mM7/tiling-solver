@@ -6,6 +6,7 @@ import { solver, type PieceArrangeData } from "./service/solver";
 import { colorSet } from "./service/colorSet";
 import BoardSelector from "./components/BoardSelector";
 import PiecesSelector from "./components/PiecesSelector";
+import PresetButtons from "./components/PresetButtons";
 
 function App() {
   const [rows, setRows] = useState(4);
@@ -63,73 +64,14 @@ function App() {
 
   return (
     <>
-      <div>
-        <button
-          onClick={() => {
-            setRows(4);
-            setCols(5);
-            setBoard([
-              [0, 0],
-              [0, 1],
-              [0, 2],
-              [0, 3],
-              [0, 4],
-              [1, 0],
-              [1, 1],
-              [1, 2],
-              [1, 3],
-              [2, 0],
-              [2, 2],
-              [2, 3],
-              [3, 0],
-              [3, 1],
-              [3, 2],
-              [3, 3],
-            ]);
-            setPieces([
-              [
-                [1, 2],
-                [1, 3],
-                [2, 1],
-                [2, 2],
-              ],
-              [
-                [0, 1],
-                [1, 1],
-                [2, 1],
-                [2, 2],
-              ],
-              [
-                [1, 1],
-                [1, 2],
-                [2, 1],
-                [2, 2],
-              ],
-              [
-                [1, 1],
-                [1, 2],
-                [1, 3],
-                [2, 2],
-              ],
-            ]);
-            setRotatable(true);
-          }}
-        >
-          Sample
-        </button>
-        <button
-          onClick={() => {
-            setRows(4);
-            setCols(4);
-            setBoard([]);
-            setPieces([[], []]);
-            setRotatable(false);
-            setResults({ dlxResults: [], piecesSnapshot: [] });
-          }}
-        >
-          Clear
-        </button>
-      </div>
+      <PresetButtons
+        setRows={setRows}
+        setCols={setCols}
+        setBoard={setBoard}
+        setPieces={setPieces}
+        setRotatable={setRotatable}
+        setResults={setResults}
+      />
       <BoardSelector
         rows={rows}
         cols={cols}
